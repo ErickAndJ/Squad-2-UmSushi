@@ -16,7 +16,7 @@ Projeto desenvolvido pela Squad 2.
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/ErickAndJ/Squad-2-UmSushi.git
+   git clone https://github.com/rianbene/Squad-2-UmSushi.git
    ```
 
 2. Instale as dependências:

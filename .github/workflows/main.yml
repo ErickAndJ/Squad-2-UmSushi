@@ -1,0 +1,75 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: 
+    - main
+    - develop
+  pull_request:
+    branches: 
+    - main
+env:
+  NODE_VERSION: 22              
+  FRONTEND_DIR: "./frontend"
+  BACKEND_DIR: "./backend"
+
+jobs:
+  backend-ci:
+    name: Backend - CI (Nest.js)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.BACKEND_DIR }}
+    steps:
+      - name: Checkout Backend Code
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3.9.1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Lint Backend
+        run: npm run lint
+
+      - name: Test Backend with Coverage
+        run: npm run test:cov
+
+      - name: Security Audit Backend
+        run: npm audit --audit-level=high || true
+
+      - name: Build Backend
+        run: npm run build
+
+  frontend-ci:
+    name: Frontend - CI (Next.js)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.FRONTEND_DIR }}
+    steps:
+      - name: Checkout Frontend Code
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3.9.1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Lint Frontend
+        run: npm run lint
+
+      - name: Test Frontend with Coverage
+        run: npm run test:cov
+
+      - name: Security Audit Frontend
+        run: npm audit --audit-level=high || true
+
+      - name: Build Frontend
+        run: npm run build
